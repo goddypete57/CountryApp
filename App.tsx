@@ -1,118 +1,47 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
+import 'react-native-gesture-handler'
+import React, { useEffect, useContext, useState } from "react";
+import { View, Text, StatusBar, Platform } from 'react-native'
+import { NavigationContainer } from '@react-navigation/native';
+import Toast from 'react-native-toast-message';
 
-import React from 'react';
-import type {PropsWithChildren} from 'react';
-import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
 
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+// import { AuthContext, AuthContextProvider } from "./context/AuthContext";
+import MainStack from "./src/navigation/stacks/MainStack";
 
-type SectionProps = PropsWithChildren<{
-  title: string;
-}>;
+import colors from './assets/colors/colors';
+import { AuthContext, AuthContextProvider } from './context/AuthContext';
 
-function Section({children, title}: SectionProps): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-  return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
+
+
+const RootNavigator: React.FC = () => {
+  const authContext = useContext(AuthContext);
+  if (!authContext) {
+    return <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <Text>Broken!</Text>
     </View>
-  );
-}
-
-function App(): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
+  }
+  const [isLoading, setLoading] = useState(true);
+   useEffect(() => { setTimeout(() => setLoading(false), 2000) });
 
   return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
-      />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.tsx</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+    <NavigationContainer>
+      {
+         <MainStack /> }
+    </NavigationContainer>
+  )
+}
+export default function App() {
+  {
+    Platform.OS == 'ios' && <View style={{ height: 50, backgroundColor: colors.light.black }}></View>
+  }
+  return (
+    <>
+      <AuthContextProvider>
+
+      <StatusBar backgroundColor={"#B847EF"} />
+      <RootNavigator />
+      </AuthContextProvider>
+      <Toast />
+    </>
   );
 }
-
-const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-  },
-  highlight: {
-    fontWeight: '700',
-  },
-});
-
-export default App;
