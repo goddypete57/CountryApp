@@ -23,7 +23,7 @@ export const useAuth = () => {
 
 export const AuthContextProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [isLoading, setIsLoading] = useState(true);
-  const [colorScheme, setColorScheme] = useState<'light' | 'dark'>('light');
+  const [colorScheme, setColorScheme] = useState<'light' | 'dark'>('dark');
   const deviceColorScheme = useColorScheme();
 
   // Get theme from storage
@@ -69,9 +69,8 @@ export const AuthContextProvider: React.FC<{ children: React.ReactNode }> = ({ c
 
   // Update theme when device theme changes
   useEffect(() => {
-    if (deviceColorScheme) {
-      getTheme();
-    }
+    setColorScheme(deviceColorScheme);
+    AsyncStorage.setItem('theme', deviceColorScheme);
   }, [deviceColorScheme]);
 
   const contextValue: AuthContextType = {

@@ -14,14 +14,14 @@ import { AuthContext, AuthContextProvider } from './context/AuthContext';
 
 
 const RootNavigator: React.FC = () => {
-  const authContext = useContext(AuthContext);
-  if (!authContext) {
-    return <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text>Broken!</Text>
-    </View>
-  }
-  const [isLoading, setLoading] = useState(true);
-   useEffect(() => { setTimeout(() => setLoading(false), 2000) });
+  // const authContext = useContext(AuthContext);
+  // if (!authContext) {
+  //   return <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+  //     <Text>Broken!</Text>
+  //   </View>
+  // }
+  // const [isLoading, setLoading] = useState(true);
+  //  useEffect(() => { setTimeout(() => setLoading(false), 2000) });
 
   return (
     <NavigationContainer>
@@ -32,13 +32,13 @@ const RootNavigator: React.FC = () => {
 }
 export default function App() {
   {
-    Platform.OS == 'ios' && <View style={{ height: 50, backgroundColor: colors.light.black }}></View>
+    Platform.OS == 'ios' && <View style={{ height: 50, backgroundColor: colors.light.white }}></View>
   }
   return (
     <>
       <AuthContextProvider>
 
-      <StatusBar backgroundColor={"#B847EF"} />
+      <StatusBar backgroundColor={"#000"} />
       <RootNavigator />
       </AuthContextProvider>
       <Toast />

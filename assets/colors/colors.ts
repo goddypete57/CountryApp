@@ -1,58 +1,29 @@
 const common = {
-  primary: '#B847EF',
-  secondary: '#19A7FD',
-  white: '#FFFFFF',
-  black: '#000000',
-  textLight: '#424344',
-  textGray: '#8A817C',
-  aliceBlue: '#E9F1F7',
-  success: '#AEFFB2',
-  error: '#FFAEAE',
-  inactiveBt: '#D7D7D7',
-  inactiveTab: '#DEDEDE',
-  textHash: '#455154',
-  // border: '#F8F8F9',
-  warning: '#FFD9E9',
-  subText: '#868686',
-  textColor:'#1E1E1E',
-
+  white: '#B847EF',
+  // transwhite: 'rgba(255, 255, 255, 0.3)',
+  border: 'rgba(169, 184, 212, 1)',
 };
-
 
 const light = {
   background: '#FFFFFF',
-  textDark: '#1E1E1E',
-  textlight: '#FFFFFF',
-  inactive: 'rgba(34, 22, 98, 0.15)',
-  gray:'#FBF3FF',
-  card:'#FBFBFB',
-  lightcard:'#FBF2FF',
-  tab:'#F3F3F3',
-  subtext:'#7A7A7A',
-  cardBorder:'#DDDDDD',
-  field: '#FAEFFF',
-  inputText:'#FBFBFB',
-  border:'rgba(130, 130, 130, 0.10)',
-  buttonLight:'#888',
+  text: '#1C1917',
+  textlight: '#667085',
+  someText: '#D0D5DD',
+  thembackground: 'rgba(252, 252, 253, 1)',
+  searchText: 'rgba(102, 112, 133, 1)',
+  searchbackground: 'rgba(242, 244, 247, 1)',
   ...common,
-}
+};
 
 const dark = {
-  background: '#0D0014',
-  textDark: '#FFFFFF',
-  textlight: '#1E1E1E',
-  inactive: 'rgba(34, 22, 98, 0.15)',
-  gray:'#2D2D2D',
-  card:'#2D2D2D',
-  lightcard:'#2D2D2D',
-  tab:'#2D2D2D',
-  subtext:'#EEEEEE',
-  cardBorder:'#2D2D2D',
-  field: '#2D2D2D',
-  inputText:'#2D2D2D',
-  border:'rgba(130, 130, 130, 0.10)',
-  buttonLight:'#2D2D2D',
+  background: 'rgba(0, 15, 36, 1)',
+  text: '#F2F4F7',
+  textlight: '#98A2B3',
+  someText: '#000000',
+  thembackground: 'rgba(152, 162, 179, 0.2)',
+  searchText: 'rgba(234, 236, 240, 1)',
+  searchbackground: 'rgba(152, 162, 179, 0.2)',
   ...common,
-}
+};
 
-export default { light, dark };
+export default {light, dark};
