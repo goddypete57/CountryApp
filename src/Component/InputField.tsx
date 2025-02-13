@@ -19,7 +19,7 @@ export default function InputField({ theme = 'dark', rightComponet, leftComponet
         <View style={[{
             backgroundColor:colors[theme].searchbackground,
             paddingHorizontal: 18,
-            height: 50,
+            height: 48,
             flexDirection: 'row',
             width: '100%',
             alignItems:"center",
