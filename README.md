@@ -1,97 +1,134 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+# Country Explorer App
 
-# Getting Started
+A React Native application that allows users to explore countries worldwide with beautiful animations and filtering capabilities.
 
-> **Note**: Make sure you have completed the [Set Up Your Environment](https://reactnative.dev/docs/set-up-your-environment) guide before proceeding.
+## Features
 
-## Step 1: Start Metro
+- 🌍 Browse countries with their flags and details
+- 🔍 Search functionality
+- 🏷️ Filter countries by continent and timezone
+- 🎨 Dark/Light theme support
+- ⚡ Smooth animations using Reanimated
+- ↻ Pull-to-refresh functionality
 
-First, you will need to run **Metro**, the JavaScript build tool for React Native.
+## Tech Stack
 
-To start the Metro dev server, run the following command from the root of your React Native project:
+- React Native
+- TypeScript
+- React Navigation
+- React Native Reanimated
+- React Native Raw Bottom Sheet
 
-```sh
-# Using npm
-npm start
+## Prerequisites
 
-# OR using Yarn
-yarn start
+- Node.js >= 14
+- yarn or npm
+- React Native development environment setup
+- iOS: XCode (for Mac users)
+- Android: Android Studio & SDK
+
+## Installation
+
+1. Clone the repository:
+
+```bash
+git clone [repository-url]
+cd country-explorer
 ```
 
-## Step 2: Build and run your app
-
-With Metro running, open a new terminal window/pane from the root of your React Native project, and use one of the following commands to build and run your Android or iOS app:
+2. Install dependencies:
+```bash
+npm install
+```
 
 ### Android
-
-```sh
-# Using npm
-npm run android
-
-# OR using Yarn
+```bash
 yarn android
+# or
+npm run android
 ```
 
-### iOS
+## Project Structure
 
-For iOS, remember to install CocoaPods dependencies (this only needs to be run on first clone or after updating native deps).
-
-The first time you create a new project, run the Ruby bundler to install CocoaPods itself:
-
-```sh
-bundle install
+```
+src/
+├── assets/
+│   ├── colors/
+│   └── images/
+├── components/
+│   ├── FilterBottomSheet.tsx
+│   └── LanguageBottomSheet.tsx
+├── context/
+│   └── AuthContext.tsx
+├── navigation/
+│   └── routes/
+├── screens/
+│   ├── Search.tsx
+│   ├── SearchDetails.tsx
+│   └── SplashScreen.tsx
+└── types/
 ```
 
-Then, and every time you update your native dependencies, run:
+## Key Dependencies
 
-```sh
-bundle exec pod install
+```json
+{
+  "react-native": "0.72.x",
+  "react-native-reanimated": "^3.x",
+  "react-native-raw-bottom-sheet": "^2.x",
+  "@react-navigation/native": "^6.x",
+  "react-native-safe-area-context": "^4.x"
+}
 ```
 
-For more information, please visit [CocoaPods Getting Started guide](https://guides.cocoapods.org/using/getting-started.html).
+## API Reference
 
-```sh
-# Using npm
-npm run ios
+The app uses the [REST Countries API](https://restcountries.com/) for country data.
 
-# OR using Yarn
-yarn ios
+Endpoint used:
+```
+GET https://restcountries.com/v3.1/all?fields=name,flags,capital,continents,timezones
 ```
 
-If everything is set up correctly, you should see your new app running in the Android Emulator, iOS Simulator, or your connected device.
+## Contributing
 
-This is one way to run your app — you can also build it directly from Android Studio or Xcode.
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
-## Step 3: Modify your app
+## Troubleshooting
 
-Now that you have successfully run the app, let's make changes!
+### Common Issues
 
-Open `App.tsx` in your text editor of choice and make some changes. When you save, your app will automatically update and reflect these changes — this is powered by [Fast Refresh](https://reactnative.dev/docs/fast-refresh).
+1. Reanimated Installation
+If you encounter issues with Reanimated, ensure:
+- Babel plugin is properly configured
+- Clean build folders and reinstall dependencies
+```bash
+cd android && ./gradlew clean
+cd ios && pod install
+```
 
-When you want to forcefully reload, for example to reset the state of your app, you can perform a full reload:
+2. Metro Bundler
+If metro bundler shows errors:
+```bash
+yarn start --reset-cache
+```
 
-- **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Dev Menu**, accessed via <kbd>Ctrl</kbd> + <kbd>M</kbd> (Windows/Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (macOS).
-- **iOS**: Press <kbd>R</kbd> in iOS Simulator.
+## License
 
-## Congratulations! :tada:
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details
 
-You've successfully run and modified your React Native App. :partying_face:
+## Acknowledgments
 
-### Now what?
+- [REST Countries API](https://restcountries.com/)
+- [React Native Community](https://reactnative.dev/community/overview)
+- [React Native Reanimated](https://docs.swmansion.com/react-native-reanimated/)
 
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [docs](https://reactnative.dev/docs/getting-started).
+## Contact
 
-# Troubleshooting
+Your Name - [@yourtwitter](https://twitter.com/yourtwitter)
 
-If you're having issues getting the above steps to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
-
-# Learn More
-
-To learn more about React Native, take a look at the following resources:
-
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
+Project Link: [https://github.com/yourusername/country-explorer](https://github.com/yourusername/country-explorer)

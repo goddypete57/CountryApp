@@ -2,17 +2,13 @@ import React, { createContext, useState, useEffect, useContext } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useColorScheme } from 'react-native';
 
-// Define the context type
 interface AuthContextType {
-  isLoading: boolean;
   colorScheme: 'light' | 'dark';
   toggleTheme: () => Promise<void>;
 }
 
-// Create context with proper typing
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-// Custom hook for using auth context
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (context === undefined) {
@@ -22,11 +18,11 @@ export const useAuth = () => {
 };
 
 export const AuthContextProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [isLoading, setIsLoading] = useState(true);
+  // const [isLoading, setIsLoading] = useState(true);
   const [colorScheme, setColorScheme] = useState<'light' | 'dark'>('dark');
   const deviceColorScheme = useColorScheme();
 
-  // Get theme from storage
+  
   const getTheme = async () => {
     try {
       const storedTheme = await AsyncStorage.getItem('theme');
@@ -41,7 +37,7 @@ export const AuthContextProvider: React.FC<{ children: React.ReactNode }> = ({ c
     }
   };
 
-  // Toggle theme function
+
   const toggleTheme = async () => {
     try {
       const newTheme = colorScheme === 'dark' ? 'light' : 'dark';
@@ -52,7 +48,7 @@ export const AuthContextProvider: React.FC<{ children: React.ReactNode }> = ({ c
     }
   };
 
-  // Initialize theme and auth state
+ 
   useEffect(() => {
     const initialize = async () => {
       try {
@@ -60,21 +56,21 @@ export const AuthContextProvider: React.FC<{ children: React.ReactNode }> = ({ c
       } catch (error) {
         console.error('Initialization error:', error);
       } finally {
-        setIsLoading(false);
+        // setIsLoading(false);
       }
     };
 
     initialize();
   }, []);
 
-  // Update theme when device theme changes
+ 
   useEffect(() => {
     setColorScheme(deviceColorScheme);
     AsyncStorage.setItem('theme', deviceColorScheme);
   }, [deviceColorScheme]);
 
   const contextValue: AuthContextType = {
-    isLoading,
+    // isLoading,
     colorScheme,
     toggleTheme,
   };

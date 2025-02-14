@@ -11,6 +11,7 @@ import {
   TextInput,
   TouchableOpacity,
   View,
+  RefreshControl,
 } from 'react-native';
 import colors from '../../assets/colors/colors';
 import {useAuth} from '../../context/AuthContext';
@@ -19,8 +20,11 @@ import {useCallback, useEffect, useRef, useState} from 'react';
 import endpoints from '../../assets/endpoints/EndPoint';
 import mainRouts from '../navigation/routs/mainRouts';
 import Bottomsheet from 'react-native-raw-bottom-sheet';
-import { RadioButton } from 'react-native-paper';
+import {RadioButton} from 'react-native-paper';
 import {RBSheetRef} from 'react-native-raw-bottom-sheet';
+import CheckBox from '@react-native-community/checkbox';
+import FilterBottomSheet from '../Component/FilterBottomSheet';
+import LanguageBottomSheet from '../Component/LanguageBottomSheet';
 
 interface IProps {
   navigation: NativeStackNavigationProp<any>;
@@ -47,19 +51,22 @@ const Search: React.FC<IProps> = ({navigation}) => {
   const [selectedContinents, setSelectedContinents] = useState<string[]>([]);
   const [selectedTimeZones, setSelectedTimeZones] = useState<string[]>([]);
   const filterBottomSheetRef = useRef<RBSheetRef>(null);
+  const languageBottomSheetRef = useRef<RBSheetRef>(null);
+  const [refreshing, setRefreshing] = useState(false);
 
   const fetchInterests = async (query: string) => {
     try {
       const response = await fetch(
         `${endpoints.baseUrl}${endpoints.interest}`,
-        {
-          method: 'GET',
-          headers: {
-            Authorization: 'Bearer ' + endpoints.token,
-            Accept: 'application/json',
-          },
-        },
+        // {
+        //   method: 'GET',
+        //   headers: {
+        //     Authorization: 'Bearer ' + endpoints.token,
+        //     Accept: 'application/json',
+        //   },
+        // },
       );
+      setRefreshing(true)
       const data = await response.json();
 
       const sortedCountries = data.sort((a: any, b: any) =>
@@ -67,7 +74,9 @@ const Search: React.FC<IProps> = ({navigation}) => {
       );
 
       setcountry(sortedCountries);
+      setRefreshing(false)
     } catch (error) {
+      setRefreshing(false)
       console.error('Error fetching interests:', error);
     }
   };
@@ -119,80 +128,16 @@ const Search: React.FC<IProps> = ({navigation}) => {
     return grouped.sort((a, b) => a.title.localeCompare(b.title));
   };
 
-  const CONTINENTS = [
-    'Africa',
-    'Antarctica',
-    'Asia',
-    'Australia',
-    'Europe',
-    'North America',
-    'South America',
-  ];
-
-  const TIME_ZONES = [
-    'GMT+1:00',
-    'GMT+2:00',
-    'GMT+3:00',
-    'GMT+4:00',
-    'GMT+5:00',
-  ];
-
-  const FilterSection: React.FC<{
-    title: string;
-    items: string[];
-    selectedItems: string[];
-    onItemPress: (item: string) => void;
-  }> = ({ title, items, selectedItems, onItemPress }) => {
-    const { colorScheme: appearance } = useAuth();
-    
-    return (
-      <View style={{ marginBottom: 24 }}>
-        <Text
-          style={{
-            fontSize: 16,
-            fontFamily: 'Axiforma-Bold',
-            color: colors[appearance].text,
-            marginBottom: 16,
-          }}>
-          {title}
-        </Text>
-        {items.map((item) => (
-          <TouchableOpacity
-            key={item}
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              paddingVertical: 12,
-            }}
-            onPress={() => onItemPress(item)}>
-            <Text
-              style={{
-                fontSize: 16,
-                fontFamily: 'Axiforma-Regular',
-                color: colors[appearance].text,
-              }}>
-              {item}
-            </Text>
-            <View
-              style={{
-                width: 24,
-                height: 24,
-                borderRadius: 4,
-                borderWidth: 2,
-                borderColor: colors[appearance].text,
-                backgroundColor: selectedItems.includes(item)
-                  ? colors[appearance].text
-                  : 'transparent',
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}
-            />
-          </TouchableOpacity>
-        ))}
-      </View>
-    );
-  };
+  const onRefresh = React.useCallback(async () => {
+    setRefreshing(true);
+    try {
+      await fetchInterests(search);
+    } catch (error) {
+      console.error('Error refreshing:', error);
+    } finally {
+      setRefreshing(false);
+    }
+  }, []);
 
   return (
     <>
@@ -255,7 +200,7 @@ const Search: React.FC<IProps> = ({navigation}) => {
         <View style={styles.filterHeader}>
           <TouchableOpacity
             onPress={() => {
-              bottomSheetRef.current?.open();
+              languageBottomSheetRef.current?.open();
             }}
             style={styles.box}>
             <Image
@@ -265,12 +210,12 @@ const Search: React.FC<IProps> = ({navigation}) => {
               tintColor={colors[appearance].text}
             />
             <Text style={[styles.language, {color: colors[appearance].text}]}>
-              EN
+              {selectedLanguage.substring(0, 2)}
             </Text>
           </TouchableOpacity>
 
-          <TouchableOpacity 
-            onPress={() => filterBottomSheetRef.current?.open()} 
+          <TouchableOpacity
+            onPress={() => filterBottomSheetRef.current?.open()}
             style={styles.box}>
             <Image
               style={{width: 24, height: 24}}
@@ -285,8 +230,16 @@ const Search: React.FC<IProps> = ({navigation}) => {
         </View>
 
         <SectionList
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+              tintColor={colors[appearance].text}
+              colors={[colors[appearance].background]}
+            />
+          }
           sections={getAlphabeticallyGroupedData(
-            search.length > 0 ? filteredInterests : allCountry,
+            filteredInterests.length > 0 ? filteredInterests : allCountry,
           )}
           keyExtractor={item => item.name.common}
           style={{marginTop: 16}}
@@ -329,239 +282,19 @@ const Search: React.FC<IProps> = ({navigation}) => {
         />
       </View>
 
-      <Bottomsheet
-        height={500}
-        width={'100%'}
-        animationType="fade"
-        ref={bottomSheetRef}
-        closeOnDragDown={true}
-        closeOnPressMask={true}
-        closeOnPressBack={true}
-        customStyles={{
-          draggableIcon: {
-            width: 0,
-            height: 0,
-          },
-          container: {
-            
-            backgroundColor: colors[appearance].background,
-            borderTopStartRadius: 20,
-            borderTopRightRadius: 20,
-            padding: 20,
-            paddingBottom: 12,
-          },
-        }}>
-        <View
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-          }}>
-          <Text
-            style={{
-              fontSize: 20,
-              fontFamily: 'Axiforma-Bold',
-              color: colors[appearance].text,
-              paddingTop: 2,
-            }}>
-            Languages
-          </Text>
+      <LanguageBottomSheet
+        bottomSheetRef={languageBottomSheetRef}
+        selectedLanguage={selectedLanguage}
+        setSelectedLanguage={setSelectedLanguage}
+      />
 
-          <TouchableOpacity
-            onPress={() => {
-              bottomSheetRef.current?.close();
-            }}>
-            <Image
-              style={{width: 30, height: 30}}
-              source={appearance == 'dark' ? require('../../assets/images/close2.png') :  require('../../assets/images/close1.png')}
-              resizeMode="cover"
-            />
-          </TouchableOpacity>
-        </View>
-
-        <ScrollView style={{marginTop: 20}}>
-          {[
-            'Bahasa',
-            'Deutsch',
-            'English',
-            'Español',
-            'Française',
-            'Italiano',
-            'Português',
-            'Pусский',
-            'Svenska',
-            'Türkçe',
-            '普通话',
-            'بالعربية',
-            'বাঙ্গালী'
-          ].map((language) => (
-            <TouchableOpacity
-              key={language}
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                paddingVertical: 12,
-              
-              }}
-              onPress={() => {
-                setSelectedLanguage(language);
-                bottomSheetRef.current?.close();
-              }}>
-              <Text
-                style={{
-                  fontSize: 16,
-                  fontFamily: 'Axiforma-Regular',
-                  color: colors[appearance].text,
-                }}>
-                {language}
-              </Text>
-              <RadioButton
-                value={language}
-                status={selectedLanguage === language ? 'checked' : 'unchecked'}
-                onPress={() => {
-                  setSelectedLanguage(language);
-                  bottomSheetRef.current?.close();
-                }}
-                color={colors[appearance].text}
-                uncheckedColor={colors[appearance].text}
-              />
-            </TouchableOpacity>
-          ))}
-        </ScrollView>
-      </Bottomsheet>
-
-      <Bottomsheet
-        height={600}
-        ref={filterBottomSheetRef}
-        closeOnPressMask={true}
-        closeOnPressBack={true}
-        customStyles={{
-          container: {
-            backgroundColor: colors[appearance].background,
-            borderTopStartRadius: 20,
-            borderTopRightRadius: 20,
-            padding: 20,
-            paddingBottom: 12,
-          },
-          draggableIcon: {
-            width: 0,
-            height: 0,
-          },
-        }}>
-        <View>
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              marginBottom: 20,
-            }}>
-            <Text
-              style={{
-                fontSize: 24,
-                fontFamily: 'Axiforma-Bold',
-                color: colors[appearance].text,
-              }}>
-              Filter
-            </Text>
-            <TouchableOpacity onPress={() => filterBottomSheetRef.current?.close()}>
-              <Image
-                style={{ width: 30, height: 30 }}
-                source={
-                  appearance === 'dark'
-                    ? require('../../assets/images/close2.png')
-                    : require('../../assets/images/close1.png')
-                }
-                resizeMode="cover"
-              />
-            </TouchableOpacity>
-          </View>
-
-          <ScrollView contentContainerStyle={{flexGrow:1,paddingBottom:80}} showsVerticalScrollIndicator={false}>
-            <FilterSection
-              title="Continent"
-              items={CONTINENTS}
-              selectedItems={selectedContinents}
-              onItemPress={(item) => {
-                setSelectedContinents((prev) =>
-                  prev.includes(item)
-                    ? prev.filter((i) => i !== item)
-                    : [...prev, item]
-                );
-              }}
-            />
-
-            <FilterSection
-              title="Time Zone"
-              items={TIME_ZONES}
-              selectedItems={selectedTimeZones}
-              onItemPress={(item) => {
-                setSelectedTimeZones((prev) =>
-                  prev.includes(item)
-                    ? prev.filter((i) => i !== item)
-                    : [...prev, item]
-                );
-              }}
-            />
-
-            <View
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                marginTop: 20,
-                gap: 40,
-              }}>
-              <TouchableOpacity
-                style={{
-                  flex: 0.5,
-                  justifyContent: 'center',
-                  borderRadius: 8,
-                  borderWidth: 1,
-                  height: 48,
-                  borderColor: colors[appearance].text,
-                  alignItems: 'center',
-                }}
-                onPress={() => {
-                  setSelectedContinents([]);
-                  setSelectedTimeZones([]);
-                }}>
-                <Text
-                  style={{
-                    color: colors[appearance].text,
-                    fontSize: 16,
-                    fontFamily: 'Axiforma-SemiBold',
-                  }}>
-                  Reset
-                </Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                style={{
-                  flex: 1,
-                 justifyContent:'center',
-                  borderRadius: 8,
-                  height: 48,
-                  backgroundColor: colors[appearance].buttonColor,
-                  alignItems: 'center',
-                }}
-                onPress={() => {
-                  
-                  filterBottomSheetRef.current?.close();
-                }}>
-                <Text
-                  style={{
-                    color: '#FFFFFF',
-                    fontSize: 16,
-                    fontFamily: 'Axiforma-SemiBold',
-                  }}>
-                  Show results
-                </Text>
-              </TouchableOpacity>
-            </View>
-          </ScrollView>
-        </View>
-      </Bottomsheet>
+      <FilterBottomSheet
+        bottomSheetRef={filterBottomSheetRef}
+        selectedContinents={selectedContinents}
+        setSelectedContinents={setSelectedContinents}
+        selectedTimeZones={selectedTimeZones}
+        setSelectedTimeZones={setSelectedTimeZones}
+      />
     </>
   );
 };

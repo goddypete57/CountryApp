@@ -7,27 +7,21 @@ import colors from '../../../assets/colors/colors';
 import mainRouts from '../routs/mainRouts';
 import Search from '../../screens/Search';
 import SearchDetail from '../../screens/SearchDetail';
+import SplashScreen from '../../screens/SplashScreen';
+import { useAuth } from '../../../context/AuthContext';
 
-
-
-// Create stack navigator
 const Stack = createNativeStackNavigator();
 
-
-// Define AuthPassed component
 const AuthPassed = () => {
-  // Get color scheme from authentication context
-  // const { colorScheme } = useContext(AuthContext);
-
-  
-
-
+  const {colorScheme: appearance} = useAuth();
   return (
     <>
-      {/* Stack navigator for different screens */}
-      <Stack.Navigator>
+     
+      <Stack.Navigator
+      screenOptions={{headerShown: false}}
+      
+      >
 
-        {/* Define screens with their respective components and options */}
         <Stack.Screen
           name={mainRouts.search}
           component={Search}

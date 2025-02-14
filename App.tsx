@@ -9,13 +9,14 @@ import MainStack from './src/navigation/stacks/MainStack';
 
 import colors from './assets/colors/colors';
 import {AuthContext, AuthContextProvider} from './context/AuthContext';
+import SplashScreen from './src/screens/SplashScreen';
 
 const RootNavigator: React.FC = () => {
 
-  // const [isLoading, setLoading] = useState(true);
-  //  useEffect(() => { setTimeout(() => setLoading(false), 2000) });
+  const [isLoading, setLoading] = useState(true);
+   useEffect(() => { setTimeout(() => setLoading(false), 3000) });
 
-  return <NavigationContainer>{<MainStack />}</NavigationContainer>;
+  return <NavigationContainer>{isLoading ? <SplashScreen /> : <MainStack />}</NavigationContainer>;
 };
 export default function App() {
   {
